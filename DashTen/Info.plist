@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Dash Ten requires the microphone in order to recognise hotwords. This data never leaves the device, I promise.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>This allows Dash Ten to listen for hotwords. I promise that this data will never be sent to a server.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>

@@ -13,8 +13,38 @@ class ViewController: UIViewController {
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
     private let audioEngine = AVAudioEngine()
+    private var isRecording = false
+    
+    private var model = Model()
+    
+    @IBAction func onButtonPress(_ sender: UIButton) {
+        isRecording = !isRecording
+        if isRecording {
+            SFSpeechRecognizer.requestAuthorization { (status) in
+                switch status {
+                case .notDetermined:print ("Not determined")
+                case .restricted: print("Restricted")
+                case .denied: print("Denied")
+                case .authorized: print("Authorised")
+                default: print("Unknown case")
+                }
+            }
+            do {
+                try startRecording()
+                print("Started listening...")
+                button.setTitle("S T O P   L I S T E N I N G", for: .normal)
+            } catch {
+                print("Unexpected error: \(error)")
+            }
+        } else {
+            stopRecording()
+            button.setTitle("S T A R T  L I S T E N I N G", for: .normal)
+        }
+    }
 
-    func startRecording() throws {
+    @IBOutlet var button: UIButton!
+    
+    private func startRecording() throws {
         recognitionTask?.cancel()
         recognitionTask = nil
         
@@ -26,24 +56,21 @@ class ViewController: UIViewController {
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
         recognitionRequest!.shouldReportPartialResults = true
         
-        if #available(iOS 13, *) {
-            recognitionRequest!.requiresOnDeviceRecognition = true
-        }
+        recognitionRequest!.requiresOnDeviceRecognition = true
         
         recognitionTask = recognizer.recognitionTask(with: recognitionRequest!) { result, error in
             var isFinal = false
             
+            
             if let result = result {
                 isFinal = result.isFinal
-                print("Text recognised: \"\(result.bestTranscription.formattedString)\"")
+                let text = result.bestTranscription.formattedString
+                print("Text recognised: \"\(text)\"")
+                self.model.transcript = text
             }
             
             if error != nil || isFinal {
-                self.audioEngine.stop()
-                inputNode.removeTap(onBus: 0)
-                
-                self.recognitionRequest = nil
-                self.recognitionTask = nil
+                self.stopRecording()
             }
         }
         
@@ -55,24 +82,21 @@ class ViewController: UIViewController {
         try audioEngine.start()
     }
     
+    private func stopRecording() {
+        let inputNode = audioEngine.inputNode
+        
+        self.audioEngine.stop()
+        inputNode.removeTap(onBus: 0)
+        
+        self.recognitionRequest = nil
+        self.recognitionTask = nil
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        SFSpeechRecognizer.requestAuthorization { (status) in
-            switch status {
-            case .notDetermined:print ("Not determined")
-            case .restricted: print("Restricted")
-            case .denied: print("Denied")
-            case .authorized: print("Authorised")
-            default: print("Unknown case")
-            }
-        }
-        do {
-            try startRecording()
-            print("Started recording...")
-        } catch {
-            print("Unexpected error: \(error)")
-        }
+        
+        
     }
 
 

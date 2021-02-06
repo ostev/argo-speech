@@ -8,21 +8,42 @@
 import UIKit
 import Speech
 
+struct InternalState {
+    var isRecording = false
+}
+
 class ViewController: UIViewController {
     private let recognizer = SFSpeechRecognizer()!
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
     private let audioEngine = AVAudioEngine()
-    private var isRecording = false
+    private var internalState = InternalState()
+    private var isRecording: Bool {
+        get {
+            return internalState.isRecording
+        }
+        set(value) {
+            internalState.isRecording = value
+            label.isHidden = !value
+            
+            if value {
+                label.text = ""
+            }
+        }
+    }
     
-    private var model = Model()
+    private lazy var model = Model(onRecognised: { model in
+        if let command = model.command {
+            self.label.text = command.invocation
+        }
+    })
     
     @IBAction func onButtonPress(_ sender: UIButton) {
         isRecording = !isRecording
         if isRecording {
             SFSpeechRecognizer.requestAuthorization { (status) in
                 switch status {
-                case .notDetermined:print ("Not determined")
+                case .notDetermined: print ("Not determined")
                 case .restricted: print("Restricted")
                 case .denied: print("Denied")
                 case .authorized: print("Authorised")
@@ -43,6 +64,7 @@ class ViewController: UIViewController {
     }
 
     @IBOutlet var button: UIButton!
+    @IBOutlet weak var label: UILabel!
     
     private func startRecording() throws {
         recognitionTask?.cancel()
@@ -87,16 +109,17 @@ class ViewController: UIViewController {
         
         self.audioEngine.stop()
         inputNode.removeTap(onBus: 0)
-        
+        recognitionTask?.cancel()
         self.recognitionRequest = nil
         self.recognitionTask = nil
+        print("Stopped listening.")
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        
+        label.isHidden = true
     }
 
 

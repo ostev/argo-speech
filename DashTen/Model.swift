@@ -88,7 +88,7 @@ enum Speed: Int {
          eightyFive = 85,
          ninety = 90,
          ninetyFive = 95,
-         oneHundred
+         oneHundred = 100
 }
 
 extension Speed: CustomStringConvertible {
@@ -171,7 +171,7 @@ struct Model {
 
             let range = NSRange(location: 0, length: internalTranscript.utf16.count)
 
-            let regex = try! NSRegularExpression(pattern: #"(?<oneWord>stop|straight|slow|moderate|fast|reverse|left|right)|((?<command>speed|angle)(?<dash>\p{Pd}?)(?<number>\d\d?))"#, options: [])
+            let regex = try! NSRegularExpression(pattern: #"(?<oneWord>stop|straight|slow|moderate|fast|reverse|left|right|moon|star)|((?<command>speed|angle)(?<dash>\p{Pd}?)(?<number>\d\d?\d?))"#, options: [])
 //            let results = regex.matches(in: internalTranscript, range: range)
 
             var commands: [CommandWithInvocation] = []
@@ -211,6 +211,14 @@ struct Model {
                         fetchData(atUrl: url, callback: handler)
                     case "right":
                         let url = URL(string: startUrl + "/angle/45")!
+                        
+                        fetchData(atUrl: url, callback: handler)
+                    case "moon":
+                        let url = URL(string: startUrl + "/angle/-90")!
+                        
+                        fetchData(atUrl: url, callback: handler)
+                    case "star":
+                        let url = URL(string: startUrl + "/angle/90")!
                         
                         fetchData(atUrl: url, callback: handler)
                     case "straight":

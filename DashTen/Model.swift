@@ -132,7 +132,7 @@ func fetchData(atUrl url: URL, callback: @escaping (Data?, URLResponse?, Error?)
     sendRequest(toUrl: url, method: "GET", callback: callback)
 }
 
-let startUrl = "http://192.168.1.114/set"
+let startUrl = "http://192.168.1.113/set"
 
 func handler(data: Data?, response: URLResponse?, error: Error?) {
 
@@ -141,13 +141,13 @@ func handler(data: Data?, response: URLResponse?, error: Error?) {
         return
     }
     
-    if let response = response as? HTTPURLResponse {
-//        print("HTTP request status code: \(response)")
-    }
-    
-    if let data = data, let dataString = String(data: data, encoding: .utf8) {
-//        print("HTTP request response: \(dataString)")
-    }
+//    if let response = response as? HTTPURLResponse {
+////        print("HTTP request status code: \(response)")
+//    }
+//
+//    if let data = data, let dataString = String(data: data, encoding: .utf8) {
+////        print("HTTP request response: \(dataString)")
+//    }
 }
 
 struct Model {

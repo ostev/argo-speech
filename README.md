@@ -1,3 +1,3 @@
-# argo-speech 🎙🤖
+# DashTen, a.k.a 🎙🤖
 
-This is the iOS speech recognition app for my entry into [Pi Wars 2021](https://piwars.org/2021-vpw/), [Argo](https://argo-blog.netlify.app).
+This is the iOS speech recognition app for my entry into [Pi Wars 2021](https://piwars.org/2021-vpw/), [Argo](https://argo-blog.netlify.app). I open-sourced this project mostly so others could see an implementation of a basic speech control system using Apple's native APIs. The project is no longer actively maintained, and was last tested on iOS 14. It works by sending HTTP requests to the target robot controlled by the `web-control.py` script from the [main Argo project](https://github.com/ostev/argo) based on a set of regex-matched commands, which the web server then translates into commands sent to the robot.
